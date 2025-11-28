@@ -27,7 +27,6 @@ MYSQL_CONFIG = {
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci'
 }
-
 def obtener_conexion_bd():
     """Crea y retorna una conexión a la base de datos MySQL"""
     try:
@@ -90,15 +89,11 @@ def encriptar_contrasena(contrasena):
     """Encripta una contraseña usando SHA-256"""
     return hashlib.sha256(contrasena.encode()).hexdigest()
 
-def generar_codigo_verificacion():
-    """Genera un código de verificación aleatorio de 6 dígitos"""
-    return ''.join(random.choices(string.digits, k=6))
-
 # Inicializar la base de datos al iniciar la aplicación
 inicializar_bd()
 
 @aplicacion.route("/")
-def inicio():
+def pagina_principal():
     return render_template("index.html")
 
 @aplicacion.route("/avatares")
@@ -134,7 +129,7 @@ def historial():
     """Página de historial de actividades"""
     return render_template('historial.html')
 
-@aplicacion.route("/api/registrar", methods=["POST"])
+@aplicacion.route("/api/registro", methods=["POST"])
 def registrar_usuario():
     """Registra un nuevo usuario en la base de datos"""
     try:
@@ -149,12 +144,10 @@ def registrar_usuario():
         if not nombre_usuario or not correo or not contrasena:
             return jsonify({"exito": False, "mensaje": "Todos los campos son obligatorios"}), 400
         
-        # Generar código de verificación
-        codigo = generar_codigo_verificacion()
         contrasena_encriptada = encriptar_contrasena(contrasena)
         
         conexion = obtener_conexion_bd()
-        if notconexion:
+        if not conexion:
             return jsonify({"exito": False, "mensaje": "Error de conexión a la base de datos"}), 500
             
         cursor = conexion.cursor(dictionary=True)
@@ -162,15 +155,17 @@ def registrar_usuario():
         # Verificar si el usuario ya existe
         cursor.execute("SELECT id FROM usuarios WHERE nombre_usuario = %s OR correo = %s", 
                       (nombre_usuario, correo))
-        if cursor.fetchone():
-            conexion.close()
-            return jsonify({"exito": False, "mensaje": "El usuario o correo ya existe"}), 400
+        usuario_existente = cursor.fetchone()
         
-        # Insertar nuevo usuario
+        if usuario_existente:
+            conexion.close()
+            print(f"[v0] Usuario ya existe: {nombre_usuario} o correo: {correo}")
+            return jsonify({"exito": False, "mensaje": "El nombre de usuario o correo ya está registrado"}), 400
+        
         cursor.execute("""
-            INSERT INTO usuarios (nombre_usuario, correo, contrasena, codigo_verificacion, verificado)
-            VALUES (%s, %s, %s, %s, 0)
-        """, (nombre_usuario, correo, contrasena_encriptada, codigo))
+            INSERT INTO usuarios (nombre_usuario, correo, contrasena, verificado)
+            VALUES (%s, %s, %s, 1)
+        """, (nombre_usuario, correo, contrasena_encriptada))
         
         usuario_id = cursor.lastrowid
         
@@ -183,12 +178,11 @@ def registrar_usuario():
         conexion.commit()
         conexion.close()
         
-        print(f"[v0] Usuario registrado exitosamente con ID: {usuario_id}, código: {codigo}")
+        print(f"[v0] Usuario registrado exitosamente con ID: {usuario_id}")
         
         return jsonify({
             "exito": True,
             "mensaje": "Registro exitoso",
-            "codigo_verificacion": codigo,
             "usuario_id": usuario_id
         })
         
@@ -196,58 +190,18 @@ def registrar_usuario():
         print(f"[v0] Error en registro: {e}")
         return jsonify({"exito": False, "mensaje": f"Error en el registro: {str(e)}"}), 500
 
-@aplicacion.route("/api/verificar", methods=["POST"])
-def verificar_codigo():
-    """Verifica el código de verificación del usuario"""
-    try:
-        datos = request.json
-        nombre_usuario = datos.get('nombre_usuario')
-        codigo = datos.get('codigo')
-        
-        print(f"[v0] Verificando código para usuario: {nombre_usuario}, código: {codigo}")
-        
-        conexion = obtener_conexion_bd()
-        if not conexion:
-            return jsonify({"exito": False, "mensaje": "Error de conexión"}), 500
-            
-        cursor = conexion.cursor(dictionary=True)
-        
-        cursor.execute("""
-            SELECT id, codigo_verificacion FROM usuarios 
-            WHERE nombre_usuario = %s AND verificado = 0
-        """, (nombre_usuario,))
-        
-        usuario = cursor.fetchone()
-        
-        if not usuario:
-            conexion.close()
-            return jsonify({"exito": False, "mensaje": "Usuario no encontrado o ya verificado"}), 404
-        
-        if usuario['codigo_verificacion'] == codigo:
-            cursor.execute("UPDATE usuarios SET verificado = 1 WHERE id = %s", (usuario['id'],))
-            conexion.commit()
-            conexion.close()
-            
-            print(f"[v0] Usuario verificado exitosamente")
-            return jsonify({"exito": True, "mensaje": "Verificación exitosa"})
-        else:
-            conexion.close()
-            print(f"[v0] Código incorrecto")
-            return jsonify({"exito": False, "mensaje": "Código incorrecto"}), 400
-            
-    except Error as e:
-        print(f"[v0] Error en verificación: {e}")
-        return jsonify({"exito": False, "mensaje": str(e)}), 500
-
 @aplicacion.route("/api/login", methods=["POST"])
 def iniciar_sesion():
-    """Inicia sesión de usuario"""
+    """Inicia sesión con usuario y contraseña"""
     try:
         datos = request.json
         nombre_usuario = datos.get('nombre_usuario')
         contrasena = datos.get('contrasena')
         
-        print(f"[v0] Intento de login para: {nombre_usuario}")
+        print(f"[v0] Intentando login: {nombre_usuario}")
+        
+        if not nombre_usuario or not contrasena:
+            return jsonify({"exito": False, "mensaje": "Usuario y contraseña son obligatorios"}), 400
         
         contrasena_encriptada = encriptar_contrasena(contrasena)
         
@@ -258,7 +212,7 @@ def iniciar_sesion():
         cursor = conexion.cursor(dictionary=True)
         
         cursor.execute("""
-            SELECT id, nombre_usuario, verificado FROM usuarios 
+            SELECT id, nombre_usuario FROM usuarios 
             WHERE nombre_usuario = %s AND contrasena = %s
         """, (nombre_usuario, contrasena_encriptada))
         
@@ -269,14 +223,18 @@ def iniciar_sesion():
             print(f"[v0] Login fallido: Usuario o contraseña incorrectos")
             return jsonify({"exito": False, "mensaje": "Usuario o contraseña incorrectos"}), 401
         
-        if usuario['verificado'] == 0:
-            conexion.close()
-            print(f"[v0] Login fallido: Usuario no verificado")
-            return jsonify({"exito": False, "mensaje": "Debes verificar tu cuenta primero"}), 401
-        
         # Actualizar último acceso
         cursor.execute("UPDATE usuarios SET ultimo_acceso = NOW() WHERE id = %s", (usuario['id'],))
         conexion.commit()
+        
+        # Obtener puntos del usuario
+        cursor.execute("""
+            SELECT puntos_disponibles FROM puntos_usuario WHERE usuario_id = %s
+        """, (usuario['id'],))
+        
+        puntos = cursor.fetchone()
+        puntos_disponibles = puntos['puntos_disponibles'] if puntos else 0
+        
         conexion.close()
         
         print(f"[v0] Login exitoso para usuario ID: {usuario['id']}")
@@ -286,7 +244,8 @@ def iniciar_sesion():
             "mensaje": "Inicio de sesión exitoso",
             "usuario": {
                 "id": usuario['id'],
-                "nombre": usuario['nombre_usuario']
+                "nombre_usuario": usuario['nombre_usuario'],
+                "puntos": puntos_disponibles
             }
         })
         
