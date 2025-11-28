@@ -13,10 +13,11 @@ aplicacion = Flask(__name__,
 aplicacion.secret_key = 'tu_clave_secreta_super_segura_2025'
 
 MYSQL_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',  # Cambia esto por tu usuario de MySQL
-    'password': 'root',  # Cambia esto por tu contraseña de MySQL
-    'database': 'sistema_emociones',
+    'host': os.getenv("mysql.railway.internal"),
+    'user': os.getenv("root"),
+    'password': os.getenv("pBpINcrdIOAVjcKovMdnDGKuonTLaIOB"),
+    'database': os.getenv("railway"),
+    'port': int(os.getenv("3306")),
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci'
 }
