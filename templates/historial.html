@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Actividades</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .historial-container {
+      margin-top: 20px;
+      padding: 30px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .info-actual {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .info-actual h5 {
+      margin: 0 0 10px 0;
+      font-weight: 600;
+    }
+    .info-actual p {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    .historial-item {
+      padding: 15px;
+      margin: 10px 0;
+      background: #f5f5f5;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    .historial-item .fecha {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    .historial-item .descripcion {
+      color: #333;
+      font-size: 1rem;
+    }
+    .historial-item .puntos {
+      color: #667eea;
+      font-weight: bold;
+    }
+    .btn-actions {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+    .empty-state i {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="purple darken-3">
+    <div class="nav-wrapper container">
+      <a href="/" class="brand-logo">Mi Aplicación</a>
+      <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="/avatares">Avatares</a></li>
+        <li><a href="/minijuegos">Mini Juegos</a></li>
+        <li><a href="/misiones">Misiones</a></li>
+        <li><a href="/recompensas">Recompensas</a></li>
+        <li><a href="/perfil">Perfil</a></li>
+        <li><a href="/historial" class="active">Historial</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <ul class="sidenav" id="mobile-nav">
+    <li><a href="/avatares">Avatares</a></li>
+    <li><a href="/minijuegos">Mini Juegos</a></li>
+    <li><a href="/misiones">Misiones</a></li>
+    <li><a href="/recompensas">Recompensas</a></li>
+    <li><a href="/perfil">Perfil</a></li>
+    <li><a href="/historial">Historial</a></li>
+  </ul>
+
+  <div class="container">
+    <div class="historial-container">
+      <div class="info-actual">
+        <h5>Información Actual</h5>
+        <p id="fechaHora"></p>
+      </div>
+
+      <h4 class="center purple-text text-darken-3">Historial de Actividades</h4>
+
+      <div class="btn-actions">
+        <button id="verHistorialBtn" class="btn purple lighten-3">
+          <i class="material-icons left">visibility</i>
+          Ver Historial
+        </button>
+        <button id="descargarHistorialBtn" class="btn orange">
+          <i class="material-icons left">download</i>
+          Descargar Historial
+        </button>
+        <button id="generarReporteBtn" class="btn green">
+          <i class="material-icons left">description</i>
+          Generar Reporte
+        </button>
+      </div>
+
+      <div id="historialActividades">
+        <div class="empty-state">
+          <i class="material-icons">history</i>
+          <p>Cargando historial...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      M.Sidenav.init(document.querySelectorAll('.sidenav'));
+      
+      const usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+      if (!usuarioActual || !usuarioActual.id) {
+        M.toast({html: 'Debes iniciar sesión primero', classes: 'red'});
+        setTimeout(() => window.location.href = '/', 1500);
+        return;
+      }
+
+      // Reloj en tiempo real
+      function actualizarReloj() {
+        const fechaHora = new Date().toLocaleString('es-ES', {
+          dateStyle: 'long',
+          timeStyle: 'medium'
+        });
+        document.getElementById('fechaHora').textContent = fechaHora;
+      }
+      actualizarReloj();
+      setInterval(actualizarReloj, 1000);
+
+      // Cargar historial
+      async function cargarHistorial() {
+        try {
+          const respuesta = await fetch(`/api/obtener-historial/${usuarioActual.id}`);
+          const datos = await respuesta.json();
+          
+          const contenedor = document.getElementById('historialActividades');
+          
+          if (datos.historial && datos.historial.length > 0) {
+            contenedor.innerHTML = datos.historial.map(item => `
+              <div class="historial-item">
+                <div class="fecha">${new Date(item.fecha).toLocaleString('es-ES')}</div>
+                <div class="descripcion">${item.descripcion}</div>
+                ${item.puntos ? `<div class="puntos">+${item.puntos} puntos</div>` : ''}
+              </div>
+            `).join('');
+          } else {
+            contenedor.innerHTML = `
+              <div class="empty-state">
+                <i class="material-icons">inbox</i>
+                <p>No hay actividades registradas aún</p>
+              </div>
+            `;
+          }
+        } catch (error) {
+          console.error('Error al cargar historial:', error);
+          M.toast({html: 'Error al cargar el historial', classes: 'red'});
+        }
+      }
+
+      // Ver historial (recargar)
+      document.getElementById('verHistorialBtn').addEventListener('click', cargarHistorial);
+
+      // Descargar historial
+      document.getElementById('descargarHistorialBtn').addEventListener('click', async () => {
+        try {
+          const respuesta = await fetch(`/api/obtener-historial/${usuarioActual.id}`);
+          const datos = await respuesta.json();
+          
+          let contenido = '=== HISTORIAL DE ACTIVIDADES ===\n\n';
+          contenido += `Usuario: ${usuarioActual.nombre}\n`;
+          contenido += `Fecha de generación: ${new Date().toLocaleString('es-ES')}\n\n`;
+          
+          if (datos.historial && datos.historial.length > 0) {
+            datos.historial.forEach(item => {
+              contenido += `${new Date(item.fecha).toLocaleString('es-ES')}\n`;
+              contenido += `${item.descripcion}\n`;
+              if (item.puntos) contenido += `Puntos: +${item.puntos}\n`;
+              contenido += '\n';
+            });
+          } else {
+            contenido += 'No hay actividades registradas.\n';
+          }
+          
+          const blob = new Blob([contenido], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `historial_${usuarioActual.nombre}_${new Date().getTime()}.txt`;
+          a.click();
+          URL.revokeObjectURL(url);
+          
+          M.toast({html: 'Historial descargado exitosamente', classes: 'green'});
+        } catch (error) {
+          console.error('Error al descargar historial:', error);
+          M.toast({html: 'Error al descargar el historial', classes: 'red'});
+        }
+      });
+
+      // Generar reporte
+      document.getElementById('generarReporteBtn').addEventListener('click', async () => {
+        try {
+          const respuesta = await fetch(`/api/obtener-historial/${usuarioActual.id}`);
+          const datos = await respuesta.json();
+          
+          const totalActividades = datos.historial ? datos.historial.length : 0;
+          const puntosGanados = datos.historial 
+            ? datos.historial.reduce((sum, item) => sum + (item.puntos || 0), 0) 
+            : 0;
+          
+          let reporte = '=== REPORTE DE ACTIVIDADES ===\n\n';
+          reporte += `Usuario: ${usuarioActual.nombre}\n`;
+          reporte += `Fecha: ${new Date().toLocaleString('es-ES')}\n\n`;
+          reporte += `Total de actividades: ${totalActividades}\n`;
+          reporte += `Puntos ganados en total: ${puntosGanados}\n\n`;
+          reporte += '=== RESUMEN POR TIPO ===\n\n';
+          
+          if (datos.historial && datos.historial.length > 0) {
+            const porTipo = {};
+            datos.historial.forEach(item => {
+              const tipo = item.tipo || 'Otros';
+              porTipo[tipo] = (porTipo[tipo] || 0) + 1;
+            });
+            
+            Object.entries(porTipo).forEach(([tipo, cantidad]) => {
+              reporte += `${tipo}: ${cantidad} actividades\n`;
+            });
+          }
+          
+          const blob = new Blob([reporte], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `reporte_${usuarioActual.nombre}_${new Date().getTime()}.txt`;
+          a.click();
+          URL.revokeObjectURL(url);
+          
+          M.toast({html: 'Reporte generado exitosamente', classes: 'green'});
+        } catch (error) {
+          console.error('Error al generar reporte:', error);
+          M.toast({html: 'Error al generar el reporte', classes: 'red'});
+        }
+      });
+
+      // Cargar historial al iniciar
+      cargarHistorial();
+    });
+  </script>
+</body>
+</html>

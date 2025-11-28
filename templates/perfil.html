@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Sentir Y Crear</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/static/css/perfil.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="purple darken-2">
+        <div class="nav-wrapper container">
+            <a href="/" class="brand-logo">
+                <i class="material-icons left">sentiment_very_satisfied</i>Sentir Y Crear
+            </a>
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/avatares">Avatares</a></li>
+                <li><a href="/minijuegos">Mini Juegos</a></li>
+                <li><a href="/misiones">Misiones</a></li>
+                <li><a href="/recompensas">Recompensas</a></li>
+                <li><a href="/perfil" class="active">Perfil</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-menu">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/avatares">Avatares</a></li>
+        <li><a href="/minijuegos">Mini Juegos</a></li>
+        <li><a href="/misiones">Misiones</a></li>
+        <li><a href="/recompensas">Recompensas</a></li>
+        <li><a href="/perfil">Perfil</a></li>
+    </ul>
+
+    <main class="container">
+        <div class="section">
+            <div class="row">
+                <div class="col s12 m4">
+                    <div class="card perfil-card">
+                        <div class="card-content center-align">
+                            <div class="avatar-grande" id="avatarPerfil">😊</div>
+                            <h5 id="nombreUsuario">Usuario</h5>
+                            <p class="grey-text">Miembro desde 2025</p>
+                            <a href="/avatares" class="btn purple waves-effect waves-light">
+                                <i class="material-icons left">edit</i>Cambiar Avatar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s12 m8">
+                    <div class="card">
+                        <div class="card-content">
+                            <h5 class="purple-text">Estadísticas</h5>
+                            <div class="estadisticas-grid">
+                                <div class="stat-item">
+                                    <i class="material-icons orange-text">stars</i>
+                                    <h4 id="totalPuntos">0</h4>
+                                    <p>Puntos Totales</p>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="material-icons green-text">check_circle</i>
+                                    <h4 id="misionesTotal">0</h4>
+                                    <p>Misiones Completadas</p>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="material-icons blue-text">emoji_events</i>
+                                    <h4 id="recompensasTotal">0</h4>
+                                    <p>Recompensas Obtenidas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <h5 class="purple-text">Resumen de Actividad</h5>
+                            <p>Aquí puedes ver tu progreso y logros en Sentir Y Crear</p>
+                            <ul class="collection">
+                                <li class="collection-item">
+                                    <i class="material-icons left purple-text">face</i>
+                                    <a href="/avatares">Gestionar Avatares</a>
+                                </li>
+                                <li class="collection-item">
+                                    <i class="material-icons left orange-text">games</i>
+                                    <a href="/minijuegos">Jugar Mini Juegos</a>
+                                </li>
+                                <li class="collection-item">
+                                    <i class="material-icons left green-text">assignment</i>
+                                    <a href="/misiones">Ver Misiones Diarias</a>
+                                </li>
+                                <li class="collection-item">
+                                    <i class="material-icons left pink-text">card_giftcard</i>
+                                    <a href="/recompensas">Canjear Recompensas</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/static/js/perfil.js"></script>
+</body>
+</html>

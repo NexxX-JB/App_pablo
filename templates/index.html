@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentir Y Crear - Gestiona tus Emociones</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+  body { background-color: #f3e5f5; }
+  .hero-section { padding: 100px 0; }
+  .form-card { margin-top: 40px; }
+  .hidden { display: none; }
+  #codigoGenerado, #codigoRecuperacionGenerado { font-weight: bold; color: #d32f2f; margin-top: 10px; text-align: center; }
+  #loadingOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(255,255,255,0.8); display:flex; justify-content:center; align-items:center; z-index:9999; display:none; }
+  .btn, .sidenav a, a { font-weight: bold; transition: 0.3s; }
+  .btn:hover, .sidenav a:hover, a:hover { opacity: 0.8; }
+  .btn-large { font-size: 1.2rem; }
+  .sidenav .user-view { padding: 16px; }
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+  <div class="preloader-wrapper active">
+    <div class="spinner-layer spinner-purple-only">
+      <div class="circle-clipper left"><div class="circle"></div></div>
+      <div class="gap-patch"><div class="circle"></div></div>
+      <div class="circle-clipper right"><div class="circle"></div></div>
+    </div>
+  </div>
+</div>
+
+<nav class="purple darken-2 hidden" id="navbar">
+  <div class="nav-wrapper container">
+    <a href="#inicio" class="brand-logo">
+      <i class="material-icons left">sentiment_very_satisfied</i>Sentir Y Crear
+    </a>
+    <a href="#" data-target="slide-out" class="sidenav-trigger right">
+      <i class="material-icons">menu</i>
+    </a>
+    <ul class="right hide-on-med-and-down">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#caracteristicas">Características</a></li>
+      <li><a href="/avatares">Avatares</a></li>
+      <li><a href="/minijuegos">Mini Juegos</a></li>
+      <li><a href="/misiones">Misiones</a></li>
+      <li><a href="/recompensas">Recompensas</a></li>
+      <li><a href="/perfil">Perfil</a></li>
+      <li><a href="/historial">Historial de Actividades</a></li>
+      <li><a href="#" id="logoutBtn">Cerrar sesión</a></li>
+    </ul>
+  </div>
+</nav>
+
+<ul id="slide-out" class="sidenav">
+  <li>
+    <div class="user-view">
+      <div class="background purple darken-2"></div>
+      <a href="#!user"><i class="material-icons large white-text">sentiment_very_satisfied</i></a>
+      <a href="#!name"><span id="sidenavUserName" class="white-text name">Bienvenido</span></a>
+    </div>
+  </li>
+  <li><a href="#inicio"><i class="material-icons">home</i>Inicio</a></li>
+  <li><a href="#caracteristicas"><i class="material-icons">star</i>Características</a></li>
+  <li><a href="/avatares"><i class="material-icons">face</i>Avatares</a></li>
+  <li><a href="/minijuegos"><i class="material-icons">games</i>Mini Juegos</a></li>
+  <li><a href="/misiones"><i class="material-icons">assignment</i>Misiones</a></li>
+  <li><a href="/recompensas"><i class="material-icons">card_giftcard</i>Recompensas</a></li>
+  <li><a href="/perfil"><i class="material-icons">person</i>Perfil</a></li>
+  <li><a href="/historial"><i class="material-icons">history</i>Historial de Actividades</a></li>
+  <li><div class="divider"></div></li>
+  <li><a href="#" id="logoutBtnSidenav"><i class="material-icons">exit_to_app</i>Cerrar sesión</a></li>
+</ul>
+
+<!-- LOGIN -->
+<section id="login-section" class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col s12 m6 offset-m3">
+        <div class="card form-card z-depth-3">
+          <div class="card-content">
+            <h4 class="center purple-text">Iniciar Sesión</h4>
+            <form id="loginForm">
+              <div class="input-field">
+                <input id="loginCorreo" type="email" required>
+                <label for="loginCorreo">Correo electrónico</label>
+              </div>
+              <div class="input-field">
+                <input id="loginPassword" type="password" required>
+                <label for="loginPassword">Contraseña</label>
+              </div>
+              <div class="center">
+                <button type="submit" class="btn orange waves-effect waves-light">Entrar</button>
+              </div>
+            </form>
+            <p id="loginMessage" class="center red-text"></p>
+            <p class="center">
+              ¿No tienes cuenta?
+              <a href="#" id="linkRegistro">Regístrate aquí</a>
+            </p>
+            <p class="center">
+              ¿Olvidaste tu contraseña?
+              <a href="#" id="linkOlvidar">Recupérala aquí</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTRO -->
+<section id="register-section" class="section hidden purple lighten-5">
+  <div class="container">
+    <div class="row">
+      <div class="col s12 m6 offset-m3">
+        <div class="card form-card z-depth-3">
+          <div class="card-content">
+            <h4 class="center purple-text">Registro de Usuario</h4>
+            <form id="registerForm">
+              <div class="input-field">
+                <input id="registerName" type="text" required>
+                <label for="registerName">Nombre completo</label>
+              </div>
+              <div class="input-field">
+                <input id="registerEmail" type="email" required>
+                <label for="registerEmail">Correo electrónico</label>
+              </div>
+              <div class="input-field">
+                <input id="registerPassword" type="password" required>
+                <label for="registerPassword">Contraseña</label>
+                <span class="helper-text">Mínimo 8 caracteres</span>
+              </div>
+              <div class="center">
+                <button type="submit" class="btn purple darken-2 waves-effect waves-light">Registrar</button>
+              </div>
+            </form>
+            <p id="registerMessage" class="center red-text"></p>
+            <p class="center">
+              ¿Ya tienes cuenta?
+              <a href="#" id="linkLogin">Inicia sesión aquí</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal de recuperación de contraseña -->
+<div id="modal-recuperar" class="modal">
+  <div class="modal-content">
+    <h5 class="center purple-text">Recuperar Contraseña</h5>
+    <form id="recuperarForm">
+      <div class="input-field">
+        <input id="correoRecuperar" type="email" required>
+        <label for="correoRecuperar">Correo registrado</label>
+      </div>
+      <div class="center">
+        <button type="submit" class="btn purple darken-2 waves-effect waves-light">Enviar Código</button>
+      </div>
+    </form>
+    <p id="recuperarMessage" class="center red-text"></p>
+    <p id="codigoRecuperacionGenerado" class="center"></p>
+    <p class="center"><a href="#" id="volverLoginDesdeRecuperar">Volver al inicio</a></p>
+  </div>
+</div>
+
+<main id="contenido" class="hidden">
+  <section id="inicio" class="hero-section purple lighten-1 white-text center-align">
+    <div class="container">
+      <h1>Descubre tus Emociones</h1>
+      <p class="flow-text">Una aplicación que te ayuda a identificar y gestionar tus emociones</p>
+      <a href="#caracteristicas" class="btn-large orange waves-effect waves-light">Explorar Aplicación</a>
+
+      <div class="center" style="margin-top:20px;">
+        <a href="/historial" class="btn purple lighten-3">
+          <i class="material-icons left">history</i>
+          Ver Historial de Actividades
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="caracteristicas" class="section">
+    <div class="container">
+      <div class="row center-align">
+        <h2 class="purple-text">¿Qué hace Sentir Y Crear?</h2>
+      </div>
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="card center-align">
+            <div class="card-content">
+              <i class="material-icons large purple-text">face</i>
+              <span class="card-title">Avatares Emocionales</span>
+              <p>Crea un avatar que refleje tu estado de ánimo actual</p>
+              <a href="/avatares" class="btn purple">Ir a Avatares</a>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m4">
+          <div class="card center-align">
+            <div class="card-content">
+              <i class="material-icons large orange-text">games</i>
+              <span class="card-title">Mini Juegos</span>
+              <p>Juegos divertidos para aprender sobre tus emociones</p>
+              <a href="/minijuegos" class="btn orange">Jugar Ahora</a>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m4">
+          <div class="card center-align">
+            <div class="card-content">
+              <i class="material-icons large pink-text">assignment</i>
+              <span class="card-title">Misiones Diarias</span>
+              <p>Completa misiones y gana recompensas increíbles</p>
+              <a href="/misiones" class="btn pink">Ver Misiones</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contacto" class="page-footer purple darken-2">
+    <div class="container center-align">
+      <h5 class="white-text">Sentir Y Crear</h5>
+      <p class="grey-text text-lighten-4">Tu compañero para el bienestar emocional</p>
+    </div>
+    <div class="container center-align">
+      © 2025 Sentir Y Crear - Todos los derechos reservados
+    </div>
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  M.Sidenav.init(document.querySelectorAll('.sidenav'));
+  verificarSesionActiva();
+});
+
+const loadingOverlay=document.getElementById('loadingOverlay');
+function showLoading(){loadingOverlay.style.display='flex';}
+function hideLoading(){loadingOverlay.style.display='none';}
+
+let usuarios=JSON.parse(localStorage.getItem('usuarios'))||[];
+let usuarioActual=null;
+let intervaloReloj=null;
+
+function verificarSesionActiva(){
+  const usuarioActualCorreo = localStorage.getItem('usuarioActual');
+  if(usuarioActualCorreo){
+    const u = usuarios.find(u=>u.correo===usuarioActualCorreo);
+    if(u){
+      console.log('[v0] Usuario ya logueado:', usuarioActualCorreo);
+      mostrarSeccionConHash(contenido);
+      navBar.classList.remove('hidden');
+      sidenavUserName.textContent=u.nombre;
+      iniciarReloj();
+      usuarioActual = u;
+      return true;
+    }
+  }
+  console.log('[v0] No hay sesión activa');
+  return false;
+}
+
+const loginSection=document.getElementById('login-section');
+const registerSection=document.getElementById('register-section');
+const recuperarSection=document.getElementById('modal-recuperar');
+const contenido=document.getElementById('contenido');
+const navBar=document.getElementById('navbar');
+const sidenavUserName=document.getElementById('sidenavUserName');
+const linkRegistro=document.getElementById('linkRegistro');
+const linkLogin=document.getElementById('linkLogin');
+const linkOlvidar=document.getElementById('linkOlvidar');
+const volverLoginDesdeRecuperar=document.getElementById('volverLoginDesdeRecuperar');
+const loginMessage=document.getElementById('loginMessage');
+const registerMessage=document.getElementById('registerMessage');
+const recuperarMessage=document.getElementById('recuperarMessage');
+const codigoRecuperacionGenerado=document.getElementById('codigoRecuperacionGenerado');
+const nuevaPasswordMessage=document.getElementById('nuevaPasswordMessage');
+const fechaHoraP=document.getElementById('fechaHora');
+const historialDiv=document.getElementById('historialActividades');
+const toggleHistorialBtn=document.getElementById('toggleHistorial');
+const logoutBtn=document.getElementById('logoutBtn');
+const logoutBtnSidenav=document.getElementById('logoutBtnSidenav');
+
+function mostrarSeccion(seccion){
+  [loginSection,registerSection,recuperarSection,contenido].forEach(s=>s.classList.add('hidden'));
+  seccion.classList.remove('hidden');
+}
+
+function manejarHash(){
+  if(!contenido.classList.contains('hidden')){
+    const hash = window.location.hash || '#inicio';
+    const secciones = ['inicio','caracteristicas','contacto'];
+    secciones.forEach(id=>{
+      const sec=document.getElementById(id);
+      if(sec) sec.style.display=(('#'+id)===hash)?'block':'none';
+    });
+  }
+}
+
+window.addEventListener('hashchange', manejarHash);
+
+function mostrarSeccionConHash(seccion){
+  mostrarSeccion(contenido);
+  manejarHash();
+}
+
+// LOGIN
+document.getElementById('loginForm').onsubmit=e=>{
+  e.preventDefault();
+  loginMessage.textContent='';
+  loginMessage.className='center red-text';
+  
+  const correo=document.getElementById('loginCorreo').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPassword').value;
+  
+  console.log('[v0] Intentando login con:', correo);
+  console.log('[v0] Usuarios registrados:', usuarios.length);
+  
+  if(usuarios.length === 0){
+    loginMessage.textContent='No hay usuarios registrados. Por favor, regístrate primero.';
+    loginMessage.className='center orange-text';
+    return;
+  }
+  
+  const u=usuarios.find(u=>u.correo===correo&&u.password===pass);
+  
+  if(u){
+    console.log('[v0] Login exitoso para:', correo);
+    localStorage.setItem('usuarioActual', correo);
+    agregarActividad(`Usuario inició sesión: ${correo}`);
+    mostrarSeccionConHash(contenido);
+    navBar.classList.remove('hidden');
+    sidenavUserName.textContent=u.nombre;
+    iniciarReloj();
+    document.getElementById('loginForm').reset();
+  }else{
+    console.log('[v0] Login fallido para:', correo);
+    loginMessage.textContent='Correo o contraseña incorrectos';
+    const usuarioExiste = usuarios.find(u=>u.correo===correo);
+    if(usuarioExiste){
+      loginMessage.textContent='Contraseña incorrecta. ¿Olvidaste tu contraseña?';
+    }
+  }
+};
+
+// REGISTRO
+linkRegistro.onclick=e=>{e.preventDefault();mostrarSeccion(registerSection);}
+linkLogin.onclick=e=>{e.preventDefault();mostrarSeccion(loginSection);}
+linkOlvidar.onclick=e=>{e.preventDefault();M.Modal.init(recuperarSection).open();}
+volverLoginDesdeRecuperar.onclick=e=>{e.preventDefault();M.Modal.getInstance(recuperarSection).close();mostrarSeccion(loginSection);}
+
+document.getElementById('registerForm').onsubmit=e=>{
+  e.preventDefault();registerMessage.textContent='';
+  const nombre=document.getElementById('registerName').value.trim();
+  const correo=document.getElementById('registerEmail').value.trim().toLowerCase();
+  const password=document.getElementById('registerPassword').value;
+  
+  if(password.length<8){registerMessage.textContent='La contraseña debe tener al menos 8 caracteres';return;}
+  if(usuarios.find(u=>u.correo===correo)){registerMessage.textContent='Correo ya registrado';return;}
+  
+  const nuevoUsuario = {nombre, correo, password};
+  usuarios.push(nuevoUsuario);
+  localStorage.setItem('usuarios',JSON.stringify(usuarios));
+  agregarActividad(`Usuario registrado: ${correo}`);
+  console.log('[v0] Usuario registrado exitosamente:', correo);
+  console.log('[v0] Total de usuarios:', usuarios.length);
+  
+  registerMessage.textContent='¡Registro exitoso! Redirigiendo al login...';
+  registerMessage.className='center green-text';
+  document.getElementById('registerForm').reset();
+  
+  setTimeout(()=>{
+    mostrarSeccion(loginSection);
+    M.toast({html: '¡Registro exitoso! Ahora puedes iniciar sesión', classes: 'green'});
+  }, 1500);
+};
+
+// RECUPERAR CONTRASEÑA
+document.getElementById('recuperarForm').onsubmit=e=>{
+  e.preventDefault();recuperarMessage.textContent='';
+  const correo=document.getElementById('correoRecuperar').value.trim().toLowerCase();
+  
+  const u=usuarios.find(u=>u.correo===correo);
+  if(u){
+    console.log('[v0] Código de recuperación enviado a:', correo);
+    recuperarMessage.textContent='Código de recuperación enviado a tu correo.';
+    recuperarMessage.className='center green-text';
+    M.Modal.getInstance(recuperarSection).close();
+    mostrarSeccion(loginSection);
+    M.toast({html: 'Código de recuperación enviado', classes: 'green'});
+  }else{
+    recuperarMessage.textContent='Correo no registrado.';
+    recuperarMessage.className='center red-text';
+  }
+};
+
+// LOGOUT
+logoutBtn.onclick=e=>{e.preventDefault();logout();}
+logoutBtnSidenav.onclick=e=>{e.preventDefault();logout();}
+function logout(){
+  console.log('[v0] Cerrando sesión');
+  localStorage.removeItem('usuarioActual');
+  mostrarSeccion(loginSection);
+  navBar.classList.add('hidden');
+  contenido.classList.add('hidden');
+  clearInterval(intervaloReloj);
+  document.getElementById('loginForm').reset();
+  M.toast({html: 'Sesión cerrada exitosamente', classes: 'blue'});
+}
+
+function agregarActividad(actividad){
+  const fechaHora = new Date().toLocaleString();
+  const actividadCompleta = `${fechaHora} - ${actividad}`;
+  historialDiv.innerHTML += `<p>${actividadCompleta}</p>`;
+}
+
+function iniciarReloj(){
+  intervaloReloj = setInterval(() => {
+    const fechaHora = new Date().toLocaleString();
+    fechaHoraP.textContent = fechaHora;
+  }, 1000);
+}
+
+if(!verificarSesionActiva()){
+  mostrarSeccion(loginSection);
+}
+</script>
+</body>
+</html>

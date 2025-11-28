@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recompensas - Sentir Y Crear</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/static/css/recompensas.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="purple darken-2">
+        <div class="nav-wrapper container">
+            <a href="/" class="brand-logo">
+                <i class="material-icons left">sentiment_very_satisfied</i>Sentir Y Crear
+            </a>
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/avatares">Avatares</a></li>
+                <li><a href="/minijuegos">Mini Juegos</a></li>
+                <li><a href="/misiones">Misiones</a></li>
+                <li><a href="/recompensas" class="active">Recompensas</a></li>
+                <li><a href="/perfil">Perfil</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-menu">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/avatares">Avatares</a></li>
+        <li><a href="/minijuegos">Mini Juegos</a></li>
+        <li><a href="/misiones">Misiones</a></li>
+        <li><a href="/recompensas">Recompensas</a></li>
+        <li><a href="/perfil">Perfil</a></li>
+    </ul>
+
+    <main class="container">
+        <div class="section">
+            <h3 class="purple-text center-align">Tienda de Recompensas</h3>
+            <p class="center-align">Canjea tus puntos por recompensas especiales</p>
+
+            <div class="row">
+                <div class="col s12">
+                    <div class="card gradient-card">
+                        <div class="card-content white-text center-align">
+                            <h5>Tus Puntos Disponibles</h5>
+                            <h2 class="puntos-display">
+                                <i class="material-icons large">stars</i>
+                                <span id="puntosDisponibles">0</span>
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="purple-text">Recompensas Disponibles</h5>
+            <div class="row">
+                <div class="col s12 m6 l4">
+                    <div class="recompensa-card" data-id="avatar-especial" data-costo="50">
+                        <div class="recompensa-icon purple lighten-4">
+                            <i class="material-icons large purple-text">face_retouching_natural</i>
+                        </div>
+                        <div class="recompensa-info">
+                            <h6>Avatar Especial</h6>
+                            <p>Desbloquea un avatar único y exclusivo</p>
+                            <div class="recompensa-costo">
+                                <i class="material-icons tiny">stars</i>
+                                <span>50 puntos</span>
+                            </div>
+                        </div>
+                        <button class="btn-reclamar btn orange waves-effect waves-light">
+                            <i class="material-icons left">redeem</i>Reclamar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col s12 m6 l4">
+                    <div class="recompensa-card" data-id="insignia-oro" data-costo="100">
+                        <div class="recompensa-icon yellow lighten-4">
+                            <i class="material-icons large yellow-text text-darken-2">military_tech</i>
+                        </div>
+                        <div class="recompensa-info">
+                            <h6>Insignia de Oro</h6>
+                            <p>Obtén la insignia de maestro emocional</p>
+                            <div class="recompensa-costo">
+                                <i class="material-icons tiny">stars</i>
+                                <span>100 puntos</span>
+                            </div>
+                        </div>
+                        <button class="btn-reclamar btn orange waves-effect waves-light">
+                            <i class="material-icons left">redeem</i>Reclamar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col s12 m6 l4">
+                    <div class="recompensa-card" data-id="fondo-personalizado" data-costo="40">
+                        <div class="recompensa-icon pink lighten-4">
+                            <i class="material-icons large pink-text">wallpaper</i>
+                        </div>
+                        <div class="recompensa-info">
+                            <h6>Fondo Personalizado</h6>
+                            <p>Personaliza el fondo de tu perfil</p>
+                            <div class="recompensa-costo">
+                                <i class="material-icons tiny">stars</i>
+                                <span>40 puntos</span>
+                            </div>
+                        </div>
+                        <button class="btn-reclamar btn orange waves-effect waves-light">
+                            <i class="material-icons left">redeem</i>Reclamar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col s12 m6 l4">
+                    <div class="recompensa-card" data-id="meditacion-guiada" data-costo="25">
+                        <div class="recompensa-icon green lighten-4">
+                            <i class="material-icons large green-text">spa</i>
+                        </div>
+                        <div class="recompensa-info">
+                            <h6>Meditación Guiada</h6>
+                            <p>Acceso a sesiones de meditación premium</p>
+                            <div class="recompensa-costo">
+                                <i class="material-icons tiny">stars</i>
+                                <span>25 puntos</span>
+                            </div>
+                        </div>
+                        <button class="btn-reclamar btn orange waves-effect waves-light">
+                            <i class="material-icons left">redeem</i>Reclamar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col s12 m6 l4">
+                    <div class="recompensa-card" data-id="diario-premium" data-costo="60">
+                        <div class="recompensa-icon teal lighten-4">
+                            <i class="material-icons large teal-text">auto_stories</i>
+                        </div>
+                        <div class="recompensa-info">
+                            <h6>Diario Premium</h6>
+                            <p>Desbloquea funciones avanzadas del diario</p>
+                            <div class="recompensa-costo">
+                                <i class="material-icons tiny">stars</i>
+                                <span>60 puntos</span>
+                            </div>
+                        </div>
+                        <button class="btn-reclamar btn orange waves-effect waves-light">
+                            <i class="material-icons left">redeem</i>Reclamar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="purple-text">Historial de Recompensas</h5>
+            <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <div id="historialRecompensas" class="historial-lista">
+                                <p class="center-align grey-text">No has reclamado ninguna recompensa aún</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="modalExito" class="modal">
+        <div class="modal-content center-align">
+            <i class="material-icons large green-text">check_circle</i>
+            <h4 class="purple-text">¡Recompensa Reclamada!</h4>
+            <p id="mensajeExito"></p>
+            <p>Puntos restantes: <strong id="puntosRestantes">0</strong></p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close btn orange">Aceptar</a>
+        </div>
+    </div>
+
+    <div id="modalError" class="modal">
+        <div class="modal-content center-align">
+            <i class="material-icons large red-text">error</i>
+            <h4 class="purple-text">Error</h4>
+            <p id="mensajeError"></p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close btn orange">Cerrar</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/static/js/recompensas.js"></script>
+</body>
+</html>

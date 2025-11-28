@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria - Sentir Y Crear</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/static/css/juego-memoria.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="purple darken-2">
+        <div class="nav-wrapper container">
+            <a href="/minijuegos" class="brand-logo">
+                <i class="material-icons left">arrow_back</i>Memoria Emocional
+            </a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="section">
+            <div class="game-header">
+                <div class="game-stats-bar">
+                    <div class="stat-item">
+                        <i class="material-icons">timer</i>
+                        <span id="tiempo">0:00</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="material-icons">touch_app</i>
+                        <span>Movimientos: <strong id="movimientos">0</strong></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="material-icons">stars</i>
+                        <span>Parejas: <strong id="parejas">0/6</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tableroJuego" class="tablero-memoria"></div>
+
+            <div class="center-align" style="margin-top: 20px;">
+                <button class="btn orange waves-effect waves-light" id="reiniciarJuego">
+                    <i class="material-icons left">refresh</i>Reiniciar
+                </button>
+                <a href="/minijuegos" class="btn purple waves-effect waves-light">
+                    <i class="material-icons left">arrow_back</i>Volver
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div id="modalVictoria" class="modal">
+        <div class="modal-content center-align">
+            <h4 class="purple-text">¡Felicidades! 🎉</h4>
+            <p class="flow-text">Has completado el juego</p>
+            <p>Tiempo: <strong id="tiempoFinal"></strong></p>
+            <p>Movimientos: <strong id="movimientosFinal"></strong></p>
+            <p class="orange-text"><strong>+20 puntos ganados</strong></p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close btn orange">Jugar de nuevo</a>
+            <a href="/minijuegos" class="btn purple">Volver a juegos</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/static/js/juego-memoria.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adivina la Emoción - Sentir Y Crear</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/static/css/juego-emociones.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="purple darken-2">
+        <div class="nav-wrapper container">
+            <a href="/minijuegos" class="brand-logo">
+                <i class="material-icons left">arrow_back</i>Adivina la Emoción
+            </a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="section">
+            <div class="game-header">
+                <div class="progress-bar">
+                    <div class="progress purple lighten-4">
+                        <div class="determinate purple" id="progreso" style="width: 0%"></div>
+                    </div>
+                    <p class="center-align">Pregunta <span id="preguntaActual">1</span> de <span id="totalPreguntas">5</span></p>
+                </div>
+                <div class="puntos-display">
+                    <i class="material-icons orange-text">stars</i>
+                    <span>Puntos: <strong id="puntosActuales">0</strong></span>
+                </div>
+            </div>
+
+            <div id="juegoContainer">
+                <div class="situacion-card card">
+                    <div class="card-content">
+                        <h5 class="purple-text center-align">Situación</h5>
+                        <p class="flow-text center-align" id="situacionTexto"></p>
+                    </div>
+                </div>
+
+                <h5 class="center-align purple-text">¿Qué emoción representa esta situación?</h5>
+
+                <div class="opciones-grid" id="opcionesContainer"></div>
+
+                <div id="feedback" class="feedback-message"></div>
+            </div>
+
+            <div id="resultadoFinal" class="resultado-final" style="display: none;">
+                <div class="card">
+                    <div class="card-content center-align">
+                        <h4 class="purple-text">¡Juego Completado! 🎉</h4>
+                        <div class="resultado-stats">
+                            <p class="flow-text">Puntuación Final</p>
+                            <h3 class="orange-text" id="puntuacionFinal">0</h3>
+                            <p>Respuestas correctas: <strong id="correctas">0</strong> de <strong id="totalRespuestas">5</strong></p>
+                        </div>
+                        <div class="center-align" style="margin-top: 20px;">
+                            <button class="btn orange waves-effect waves-light" id="jugarOtraVez">
+                                <i class="material-icons left">refresh</i>Jugar otra vez
+                            </button>
+                            <a href="/minijuegos" class="btn purple waves-effect waves-light">
+                                <i class="material-icons left">arrow_back</i>Volver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/static/js/juego-emociones.js"></script>
+</body>
+</html>

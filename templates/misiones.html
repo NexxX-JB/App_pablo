@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misiones Diarias - Sentir Y Crear</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/static/css/misiones.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="purple darken-2">
+        <div class="nav-wrapper container">
+            <a href="/" class="brand-logo">
+                <i class="material-icons left">sentiment_very_satisfied</i>Sentir Y Crear
+            </a>
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/avatares">Avatares</a></li>
+                <li><a href="/minijuegos">Mini Juegos</a></li>
+                <li><a href="/misiones" class="active">Misiones</a></li>
+                <li><a href="/recompensas">Recompensas</a></li>
+                <li><a href="/perfil">Perfil</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-menu">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/avatares">Avatares</a></li>
+        <li><a href="/minijuegos">Mini Juegos</a></li>
+        <li><a href="/misiones">Misiones</a></li>
+        <li><a href="/recompensas">Recompensas</a></li>
+        <li><a href="/perfil">Perfil</a></li>
+    </ul>
+
+    <main class="container">
+        <div class="section">
+            <h3 class="purple-text center-align">Misiones Diarias</h3>
+            <p class="center-align">Completa misiones para ganar puntos y recompensas</p>
+
+            <div class="row">
+                <div class="col s12">
+                    <div class="card purple lighten-5">
+                        <div class="card-content">
+                            <h5 class="purple-text">
+                                <i class="material-icons left">emoji_events</i>
+                                Tu Progreso Hoy
+                            </h5>
+                            <div class="progreso-diario">
+                                <div class="stat-box">
+                                    <i class="material-icons orange-text">stars</i>
+                                    <p>Puntos Ganados</p>
+                                    <h4 id="puntosHoy">0</h4>
+                                </div>
+                                <div class="stat-box">
+                                    <i class="material-icons green-text">check_circle</i>
+                                    <p>Misiones Completadas</p>
+                                    <h4><span id="misionesCompletadas">0</span>/<span id="totalMisiones">9</span></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categoría: Bienestar Personal -->
+            <div class="categoria-misiones">
+                <h5 class="categoria-titulo">
+                    <i class="material-icons">favorite</i>
+                    Bienestar Personal
+                </h5>
+                <div class="misiones-lista">
+                    <div class="mision-card" data-mision="meditacion" data-puntos="10" data-categoria="bienestar">
+                        <div class="mision-icon purple lighten-4">
+                            <i class="material-icons purple-text">self_improvement</i>
+                        </div>
+                        <div class="mision-info">
+                            <h6>Meditar 5 minutos</h6>
+                            <p>Tómate un momento para relajarte y meditar</p>
+                            <span class="mision-puntos"><i class="material-icons tiny">stars</i> +10 puntos</span>
+                        </div>
+                        <div class="mision-accion">
+                            <label>
+                                <input type="checkbox" class="filled-in mision-checkbox" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mision-card" data-mision="ejercicio" data-puntos="15" data-categoria="bienestar">
+                        <div class="mision-icon orange lighten-4">
+                            <i class="material-icons orange-text">directions_run</i>
+                        </div>
+                        <div class="mision-info">
+                            <h6>Hacer ejercicio</h6>
+                            <p>Realiza 15 minutos de actividad física</p>
+                            <span class="mision-puntos"><i class="material-icons tiny">stars</i> +15 puntos</span>
+                        </div>
+                        <div class="mision-accion">
+                            <label>
+                                <input type="checkbox" class="filled-in mision-checkbox" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mision-card" data-mision="agua" data-puntos="5" data-categoria="bienestar">
+                        <div class="mision-icon blue lighten-4">
+                            <i class="material-icons blue-text">local_drink</i>
+                        </div>
+                        <div class="mision-info">
+                            <h6>Beber 8 vasos de agua</h6>
+                            <p>Mantente hidratado durante el día</p>
+                            <span class="mision-puntos"><i class="material-icons tiny">stars</i> +5 puntos</span>
+                        </div>
+                        <div class="mision-accion">
+                            <label>
+                                <input type="checkbox" class="filled-in mision-checkbox" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categoría: Emociones -->
+            <div class="categoria-misiones">
+                <h5 class="categoria-titulo">
+                    <i class="material-icons">mood</i>
+                    Gestión Emocional
+                </h5>
+                <div class="misiones-lista">
+                    <div class="mision-card" data-mision="registro" data-puntos="10" data-categoria="emociones">
+                        <div class="mision-icon pink lighten-4">
+                            <i class="material-icons pink-text">edit_note</i>
+                        </div>
+                        <div class="mision-info">
+                            <h6>Registrar tus emociones</h6>
+                            <p>Escribe cómo te sientes hoy</p>
+                            <span class="mision-puntos"><i class="material-icons tiny">stars</i> +10 puntos</span>
+                        </div>
+                        <div class="mision-accion">
+                            <label>
+                                <input type="checkbox" class="filled-in mision-checkbox" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mision-card" data-mision="avatar" data-puntos="5" data-categoria="emociones">
+                        <div class="mision-icon purple lighten-4">
+                            <i class="material-icons purple-text">face</i>
+                        </div>
+                        <div class="mision-info">
+                            <h6>Actualizar tu avatar</h6>
+                            <p>Cambia tu avatar según tu emoción actual</p>
+                            <span class="mision-puntos"><i class="material-icons tiny">stars</i> +5 puntos</span>
+                        </div>
+                        <div class="mision-accion">
+                            <label>
+                                <input type="checkbox" class="filled-in mision-checkbox" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mision-card" data-mision="gratitud" data-puntos="10" data-categoria="emociones">
+                        <div class="mision-icon yellow lighten-4">
+                            <i class="material-icons yellow-text text-darken-2">wb_sunny</i>
+                        </div>
+                        <div class="mision-info">
+                            <h6>Practicar gratitud</h6>
+                            <p>Escribe 3 cosas por las que estás agradecido</p>
+                            <span class="mision-puntos"><i class="material-icons tiny">stars</i> +10 puntos</span>
+                        </div>
+                        <div class="mision-accion">
+                            <label>
+                                <input type="checkbox" class="filled-in mision-checkbox" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categoría: Aprendizaje -->
+            <div class="categoria-misiones">
+                <h5 class="categoria-titulo">
+                    <i class="material-icons">school</i>
+                    Aprendizaje y Diversión
+                </h5>
+                <div class="misiones-lista">
+                    <div class="mision-card" data-mision="minijuego" data-puntos="20" data-categoria="aprendizaje">
+                        <div class="mision-icon green lighten-4">
+                            <i class="material-icons green-text">games</i>
+                        </div>
+                        <div class="mision-info">
+                            <h6>Completar un mini juego</h6>
+                            <p>Juega y aprende sobre emociones</p>
+                            <span class="mision-puntos"><i class="material-icons tiny">stars</i> +20 puntos</span>
+                        </div>
+                        <div class="mision-accion">
+                            <label>
+                                <input type="checkbox" class="filled-in mision-checkbox" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mision-card" data-mision="lectura" data-puntos="15" data-categoria="aprendizaje">
+                        <div class="mision-icon teal lighten-4">
+                            <i class="material-icons teal-text">menu_book</i>
+                        </div>
+                        <div class="mision-info">
+                            <h6>Leer sobre emociones</h6>
+                            <p>Lee un artículo sobre inteligencia emocional</p>
+                            <span class="mision-puntos"><i class="material-icons tiny">stars</i> +15 puntos</span>
+                        </div>
+                        <div class="mision-accion">
+                            <label>
+                                <input type="checkbox" class="filled-in mision-checkbox" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mision-card" data-mision="compartir" data-puntos="10" data-categoria="aprendizaje">
+                        <div class="mision-icon red lighten-4">
+                            <i class="material-icons red-text">share</i>
+                        </div>
+                        <div class="mision-info">
+                            <h6>Compartir con alguien</h6>
+                            <p>Habla con alguien sobre cómo te sientes</p>
+                            <span class="mision-puntos"><i class="material-icons tiny">stars</i> +10 puntos</span>
+                        </div>
+                        <div class="mision-accion">
+                            <label>
+                                <input type="checkbox" class="filled-in mision-checkbox" />
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/static/js/misiones.js"></script>
+</body>
+</html>
