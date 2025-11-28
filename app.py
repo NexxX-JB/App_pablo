@@ -17,7 +17,7 @@ MYSQL_CONFIG = {
     'user': os.getenv("root"),
     'password': os.getenv("pBpINcrdIOAVjcKovMdnDGKuonTLaIOB"),
     'database': os.getenv("railway"),
-    'port': int(os.getenv("3306")),
+    'port': int(os.getenv("56390")),
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci'
 }
