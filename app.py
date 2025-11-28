@@ -6,6 +6,7 @@ import hashlib
 import random
 import string
 import os
+from dotenv import load_dotenv
 
 aplicacion = Flask(__name__, 
             template_folder='templates',
@@ -13,11 +14,11 @@ aplicacion = Flask(__name__,
 aplicacion.secret_key = 'tu_clave_secreta_super_segura_2025'
 
 MYSQL_CONFIG = {
-    'host': os.getenv("mysql.railway.internal"),
-    'user': os.getenv("root"),
-    'password': os.getenv("pBpINcrdIOAVjcKovMdnDGKuonTLaIOB"),
-    'database': os.getenv("railway"),
-    'port': int(os.getenv("56390")),
+    'host': os.getenv("MYSQLHOST"),
+    'user': os.getenv("MYSQLUSER"),
+    'password': os.getenv("MYSQLPASSWORD"),
+    'database': os.getenv("MYSQLDATABASE"),
+    'port': int(os.getenv("MYSQLPORT")),
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci'
 }
