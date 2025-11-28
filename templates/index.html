@@ -84,8 +84,8 @@
             <h4 class="center purple-text">Iniciar Sesión</h4>
             <form id="loginForm">
               <div class="input-field">
-                <input id="loginCorreo" type="email" required>
-                <label for="loginCorreo">Correo electrónico</label>
+                <input id="loginUsuario" type="text" required>
+                <label for="loginUsuario">Nombre de usuario</label>
               </div>
               <div class="input-field">
                 <input id="loginPassword" type="password" required>
@@ -246,23 +246,23 @@ const loadingOverlay=document.getElementById('loadingOverlay');
 function showLoading(){loadingOverlay.style.display='flex';}
 function hideLoading(){loadingOverlay.style.display='none';}
 
-let usuarios=JSON.parse(localStorage.getItem('usuarios'))||[];
 let usuarioActual=null;
+let usuarioId=null;
 let intervaloReloj=null;
 
-function verificarSesionActiva(){
+async function verificarSesionActiva(){
   const usuarioActualCorreo = localStorage.getItem('usuarioActual');
-  if(usuarioActualCorreo){
-    const u = usuarios.find(u=>u.correo===usuarioActualCorreo);
-    if(u){
-      console.log('[v0] Usuario ya logueado:', usuarioActualCorreo);
-      mostrarSeccionConHash(contenido);
-      navBar.classList.remove('hidden');
-      sidenavUserName.textContent=u.nombre;
-      iniciarReloj();
-      usuarioActual = u;
-      return true;
-    }
+  const storedUserId = localStorage.getItem('usuarioId');
+  
+  if(usuarioActualCorreo && storedUserId){
+    console.log('[v0] Usuario ya logueado:', usuarioActualCorreo);
+    usuarioActual = usuarioActualCorreo;
+    usuarioId = storedUserId;
+    mostrarSeccionConHash(contenido);
+    document.getElementById('navbar').classList.remove('hidden');
+    document.getElementById('sidenavUserName').textContent=usuarioActualCorreo;
+    iniciarReloj();
+    return true;
   }
   console.log('[v0] No hay sesión activa');
   return false;
@@ -282,10 +282,7 @@ const loginMessage=document.getElementById('loginMessage');
 const registerMessage=document.getElementById('registerMessage');
 const recuperarMessage=document.getElementById('recuperarMessage');
 const codigoRecuperacionGenerado=document.getElementById('codigoRecuperacionGenerado');
-const nuevaPasswordMessage=document.getElementById('nuevaPasswordMessage');
 const fechaHoraP=document.getElementById('fechaHora');
-const historialDiv=document.getElementById('historialActividades');
-const toggleHistorialBtn=document.getElementById('toggleHistorial');
 const logoutBtn=document.getElementById('logoutBtn');
 const logoutBtnSidenav=document.getElementById('logoutBtnSidenav');
 
@@ -312,83 +309,116 @@ function mostrarSeccionConHash(seccion){
   manejarHash();
 }
 
-// LOGIN
-document.getElementById('loginForm').onsubmit=e=>{
+document.getElementById('loginForm').onsubmit=async e=>{
   e.preventDefault();
   loginMessage.textContent='';
   loginMessage.className='center red-text';
   
-  const correo=document.getElementById('loginCorreo').value.trim().toLowerCase();
+  const nombreUsuario=document.getElementById('loginUsuario').value.trim();
   const pass=document.getElementById('loginPassword').value;
   
-  console.log('[v0] Intentando login con:', correo);
-  console.log('[v0] Usuarios registrados:', usuarios.length);
+  console.log('[v0] Intentando login con:', nombreUsuario);
+  showLoading();
   
-  if(usuarios.length === 0){
-    loginMessage.textContent='No hay usuarios registrados. Por favor, regístrate primero.';
-    loginMessage.className='center orange-text';
-    return;
-  }
-  
-  const u=usuarios.find(u=>u.correo===correo&&u.password===pass);
-  
-  if(u){
-    console.log('[v0] Login exitoso para:', correo);
-    localStorage.setItem('usuarioActual', correo);
-    agregarActividad(`Usuario inició sesión: ${correo}`);
-    mostrarSeccionConHash(contenido);
-    navBar.classList.remove('hidden');
-    sidenavUserName.textContent=u.nombre;
-    iniciarReloj();
-    document.getElementById('loginForm').reset();
-  }else{
-    console.log('[v0] Login fallido para:', correo);
-    loginMessage.textContent='Correo o contraseña incorrectos';
-    const usuarioExiste = usuarios.find(u=>u.correo===correo);
-    if(usuarioExiste){
-      loginMessage.textContent='Contraseña incorrecta. ¿Olvidaste tu contraseña?';
+  try {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        nombre_usuario: nombreUsuario,
+        contrasena: pass
+      })
+    });
+    
+    const data = await response.json();
+    hideLoading();
+    
+    if(data.exito){
+      console.log('[v0] Login exitoso para:', nombreUsuario, 'ID:', data.usuario.id);
+      usuarioActual = nombreUsuario;
+      usuarioId = data.usuario.id;
+      localStorage.setItem('usuarioActual', nombreUsuario);
+      localStorage.setItem('usuarioId', data.usuario.id);
+      
+      mostrarSeccionConHash(contenido);
+      navBar.classList.remove('hidden');
+      sidenavUserName.textContent=nombreUsuario;
+      iniciarReloj();
+      document.getElementById('loginForm').reset();
+      M.toast({html: 'Bienvenido!', classes: 'green'});
+    }else{
+      console.log('[v0] Login fallido:', data.mensaje);
+      loginMessage.textContent=data.mensaje;
     }
+  } catch(error) {
+    hideLoading();
+    console.error('[v0] Error en login:', error);
+    loginMessage.textContent='Error al iniciar sesión. Intenta de nuevo.';
   }
 };
 
-// REGISTRO
 linkRegistro.onclick=e=>{e.preventDefault();mostrarSeccion(registerSection);}
 linkLogin.onclick=e=>{e.preventDefault();mostrarSeccion(loginSection);}
 linkOlvidar.onclick=e=>{e.preventDefault();M.Modal.init(recuperarSection).open();}
 volverLoginDesdeRecuperar.onclick=e=>{e.preventDefault();M.Modal.getInstance(recuperarSection).close();mostrarSeccion(loginSection);}
 
-document.getElementById('registerForm').onsubmit=e=>{
-  e.preventDefault();registerMessage.textContent='';
+document.getElementById('registerForm').onsubmit=async e=>{
+  e.preventDefault();
+  registerMessage.textContent='';
+  
   const nombre=document.getElementById('registerName').value.trim();
   const correo=document.getElementById('registerEmail').value.trim().toLowerCase();
   const password=document.getElementById('registerPassword').value;
   
-  if(password.length<8){registerMessage.textContent='La contraseña debe tener al menos 8 caracteres';return;}
-  if(usuarios.find(u=>u.correo===correo)){registerMessage.textContent='Correo ya registrado';return;}
+  if(password.length<8){
+    registerMessage.textContent='La contraseña debe tener al menos 8 caracteres';
+    return;
+  }
   
-  const nuevoUsuario = {nombre, correo, password};
-  usuarios.push(nuevoUsuario);
-  localStorage.setItem('usuarios',JSON.stringify(usuarios));
-  agregarActividad(`Usuario registrado: ${correo}`);
-  console.log('[v0] Usuario registrado exitosamente:', correo);
-  console.log('[v0] Total de usuarios:', usuarios.length);
+  showLoading();
   
-  registerMessage.textContent='¡Registro exitoso! Redirigiendo al login...';
-  registerMessage.className='center green-text';
-  document.getElementById('registerForm').reset();
-  
-  setTimeout(()=>{
-    mostrarSeccion(loginSection);
-    M.toast({html: '¡Registro exitoso! Ahora puedes iniciar sesión', classes: 'green'});
-  }, 1500);
+  try {
+    const response = await fetch('/api/registro', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        nombre_usuario: nombre,
+        correo: correo,
+        contrasena: password
+      })
+    });
+    
+    const data = await response.json();
+    hideLoading();
+    
+    if(data.exito){
+      console.log('[v0] Usuario registrado exitosamente:', correo);
+      registerMessage.textContent='¡Registro exitoso! Redirigiendo al login...';
+      registerMessage.className='center green-text';
+      document.getElementById('registerForm').reset();
+      
+      setTimeout(()=>{
+        mostrarSeccion(loginSection);
+        M.toast({html: '¡Registro exitoso! Ahora puedes iniciar sesión', classes: 'green'});
+      }, 1500);
+    } else {
+      console.log('[v0] Error en registro:', data.mensaje);
+      registerMessage.textContent=data.mensaje;
+      registerMessage.className='center red-text';
+    }
+  } catch(error) {
+    hideLoading();
+    console.error('[v0] Error en registro:', error);
+    registerMessage.textContent='Error al registrar. Intenta de nuevo.';
+    registerMessage.className='center red-text';
+  }
 };
 
-// RECUPERAR CONTRASEÑA
 document.getElementById('recuperarForm').onsubmit=e=>{
   e.preventDefault();recuperarMessage.textContent='';
   const correo=document.getElementById('correoRecuperar').value.trim().toLowerCase();
   
-  const u=usuarios.find(u=>u.correo===correo);
+  const u=usuarioActual === correo;
   if(u){
     console.log('[v0] Código de recuperación enviado a:', correo);
     recuperarMessage.textContent='Código de recuperación enviado a tu correo.';
@@ -402,12 +432,14 @@ document.getElementById('recuperarForm').onsubmit=e=>{
   }
 };
 
-// LOGOUT
 logoutBtn.onclick=e=>{e.preventDefault();logout();}
 logoutBtnSidenav.onclick=e=>{e.preventDefault();logout();}
 function logout(){
   console.log('[v0] Cerrando sesión');
   localStorage.removeItem('usuarioActual');
+  localStorage.removeItem('usuarioId');
+  usuarioActual = null;
+  usuarioId = null;
   mostrarSeccion(loginSection);
   navBar.classList.add('hidden');
   contenido.classList.add('hidden');
@@ -416,16 +448,10 @@ function logout(){
   M.toast({html: 'Sesión cerrada exitosamente', classes: 'blue'});
 }
 
-function agregarActividad(actividad){
-  const fechaHora = new Date().toLocaleString();
-  const actividadCompleta = `${fechaHora} - ${actividad}`;
-  historialDiv.innerHTML += `<p>${actividadCompleta}</p>`;
-}
-
 function iniciarReloj(){
   intervaloReloj = setInterval(() => {
     const fechaHora = new Date().toLocaleString();
-    fechaHoraP.textContent = fechaHora;
+    if(fechaHoraP) fechaHoraP.textContent = fechaHora;
   }, 1000);
 }
 
