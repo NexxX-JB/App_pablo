@@ -13,12 +13,16 @@ aplicacion = Flask(__name__,
             static_folder='static')
 aplicacion.secret_key = 'tu_clave_secreta_super_segura_2025'
 
+
+
+load_dotenv()  # Solo si quieres cargar .env local, no obligatorio en Railway
+
 MYSQL_CONFIG = {
     'host': os.getenv("MYSQLHOST"),
     'user': os.getenv("MYSQLUSER"),
     'password': os.getenv("MYSQLPASSWORD"),
     'database': os.getenv("MYSQLDATABASE"),
-    'port': int(os.getenv("MYSQLPORT")),
+    'port': int(os.getenv("MYSQLPORT")),  # <-- Aquí debe existir MYSQLPORT
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci'
 }
