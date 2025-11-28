@@ -18,11 +18,12 @@ aplicacion.secret_key = 'tu_clave_secreta_super_segura_2025'
 load_dotenv()  # Solo si quieres cargar .env local, no obligatorio en Railway
 
 MYSQL_CONFIG = {
-    'host': os.getenv("caboose.proxy.rlwy.net"),
-    'user': os.getenv("root"),
-    'password': os.getenv("pBpINcrdIOAVjcKovMdnDGKuonTLaIOB"),
-    'database': os.getenv("railway"),
-    'port': int(os.getenv("56390")),  # <-- Aquí debe existir MYSQLPORT
+    
+    'host': 'caboose.proxy.rlwy.net',
+    'user': 'root',
+    'password': 'pBpINcrdIOAVjcKovMdnDGKuonTLaIOB',
+    'database': 'railway',
+    'port': 56390,
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci'
 }
